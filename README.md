@@ -11,7 +11,7 @@ There are [many](https://github.com/search?l=C%2B%2B&q=gnuplot&type=Repositories
 
 ## Example usage
 
-```
+```c++
 #include "gnuplot.h"
 
 int main(){
