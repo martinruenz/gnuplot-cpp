@@ -43,18 +43,18 @@ public:
         else
             std::cout << "succeded." << std::endl;
     }
-    inline virtual ~GnuplotPipe(){
+    inline virtual ~GnuplotPipe() {
         if (pipe) _MR_GPCPP_PCLOSE(pipe);
     }
 
-    void sendLine(const std::string& text, bool useBuffer = false){
+    void sendLine(const std::string& text, bool useBuffer = false) {
         if (!pipe) return;
         if (useBuffer)
             buffer.push_back(text + "\n");
         else
             fputs((text + "\n").c_str(), pipe);
     }
-    void sendEndOfData(unsigned repeatBuffer = 1){
+    void sendEndOfData(unsigned repeatBuffer = 1) {
         if (!pipe) return;
         for (unsigned i = 0; i < repeatBuffer; i++) {
             for (auto& line : buffer) fputs(line.c_str(), pipe);
@@ -63,11 +63,11 @@ public:
         fflush(pipe);
         buffer.clear();
     }
-    void sendNewDataBlock(){
+    void sendNewDataBlock() {
         sendLine("\n", !buffer.empty());
     }
 
-    void writeBufferToFile(const std::string& fileName){
+    void writeBufferToFile(const std::string& fileName) {
         std::ofstream fileOut(fileName);
         for (auto& line : buffer) fileOut << line;
         fileOut.close();
