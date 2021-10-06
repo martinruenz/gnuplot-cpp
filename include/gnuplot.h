@@ -24,18 +24,27 @@
 #include <iostream>
 #include <fstream>
 
+#if defined(_MSC_VER) || defined(_WIN32)
+#include <windows.h>
+#define _MR_GPCPP_POPEN  _popen
+#define _MR_GPCPP_PCLOSE _pclose
+#else
+#define _MR_GPCPP_POPEN  popen
+#define _MR_GPCPP_PCLOSE pclose
+#endif
+
 class GnuplotPipe {
 public:
     inline GnuplotPipe(bool persist = true) {
         std::cout << "Opening gnuplot... ";
-        pipe = popen(persist ? "gnuplot -persist" : "gnuplot", "w");
+        pipe = _MR_GPCPP_POPEN(persist ? "gnuplot -persist" : "gnuplot", "w");
         if (!pipe)
             std::cout << "failed!" << std::endl;
         else
             std::cout << "succeded." << std::endl;
     }
     inline virtual ~GnuplotPipe(){
-        if (pipe) pclose(pipe);
+        if (pipe) _MR_GPCPP_PCLOSE(pipe);
     }
 
     void sendLine(const std::string& text, bool useBuffer = false){
@@ -71,3 +80,7 @@ private:
     FILE* pipe;
     std::vector<std::string> buffer;
 };
+
+
+#undef _MR_GPCPP_POPEN
+#undef _MR_GPCPP_PCLOSE
