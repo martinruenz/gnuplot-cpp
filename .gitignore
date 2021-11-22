@@ -1,0 +1,34 @@
+
+################################################################
+#                Default GitHub's CMake gitignore
+################################################################
+
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+################################################################
+#                    Additional Gitignores
+################################################################
+
+################################
+#        Visual Studio
+################################
+
+# default VS stuff folder
+.vs/
+
+# default VS output folder
+out/
+
+################################################################
+#                          Git added
+################################################################

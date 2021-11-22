@@ -24,28 +24,37 @@
 #include <iostream>
 #include <fstream>
 
+#if defined(_MSC_VER) || defined(_WIN32)
+#include <windows.h>
+#define _MR_GPCPP_POPEN  _popen
+#define _MR_GPCPP_PCLOSE _pclose
+#else
+#define _MR_GPCPP_POPEN  popen
+#define _MR_GPCPP_PCLOSE pclose
+#endif
+
 class GnuplotPipe {
 public:
     inline GnuplotPipe(bool persist = true) {
         std::cout << "Opening gnuplot... ";
-        pipe = popen(persist ? "gnuplot -persist" : "gnuplot", "w");
+        pipe = _MR_GPCPP_POPEN(persist ? "gnuplot -persist" : "gnuplot", "w");
         if (!pipe)
             std::cout << "failed!" << std::endl;
         else
             std::cout << "succeded." << std::endl;
     }
-    inline virtual ~GnuplotPipe(){
-        if (pipe) pclose(pipe);
+    inline virtual ~GnuplotPipe() {
+        if (pipe) _MR_GPCPP_PCLOSE(pipe);
     }
 
-    void sendLine(const std::string& text, bool useBuffer = false){
+    void sendLine(const std::string& text, bool useBuffer = false) {
         if (!pipe) return;
         if (useBuffer)
             buffer.push_back(text + "\n");
         else
             fputs((text + "\n").c_str(), pipe);
     }
-    void sendEndOfData(unsigned repeatBuffer = 1){
+    void sendEndOfData(unsigned repeatBuffer = 1) {
         if (!pipe) return;
         for (unsigned i = 0; i < repeatBuffer; i++) {
             for (auto& line : buffer) fputs(line.c_str(), pipe);
@@ -54,11 +63,11 @@ public:
         fflush(pipe);
         buffer.clear();
     }
-    void sendNewDataBlock(){
+    void sendNewDataBlock() {
         sendLine("\n", !buffer.empty());
     }
 
-    void writeBufferToFile(const std::string& fileName){
+    void writeBufferToFile(const std::string& fileName) {
         std::ofstream fileOut(fileName);
         for (auto& line : buffer) fileOut << line;
         fileOut.close();
@@ -71,3 +80,7 @@ private:
     FILE* pipe;
     std::vector<std::string> buffer;
 };
+
+
+#undef _MR_GPCPP_POPEN
+#undef _MR_GPCPP_PCLOSE
