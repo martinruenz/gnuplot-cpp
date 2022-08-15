@@ -49,7 +49,7 @@ public:
         if (!pipe) return;
         for (unsigned i = 0; i < repeatBuffer; i++) {
             for (auto& line : buffer) fputs(line.c_str(), pipe);
-            fputs("e\n", pipe);
+            fputs("\n", pipe);
         }
         fflush(pipe);
         buffer.clear();
