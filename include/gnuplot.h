@@ -32,7 +32,7 @@ public:
         if (!pipe)
             std::cout << "failed!" << std::endl;
         else
-            std::cout << "succeded." << std::endl;
+            std::cout << "succeeded." << std::endl;
     }
     inline virtual ~GnuplotPipe(){
         if (pipe) pclose(pipe);
